@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';//react-dom to render the component to the html
 import YTSearch from 'youtube-api-search';
 import Searchbar from './components/search_bar';//the dot slash indicates of directing my own files
 import VideoList from './components/video_list';
+import VideoDetail from './components/video_detail';
 const API_KEY = 'AIzaSyD1na-PHnHUSzNDoibdsblFYqZUZKLyjto';
 
 // YTSearch({key: API_KEY, term: 'one piece'}, data => {
@@ -15,10 +16,16 @@ class App extends Component {
   constructor(props){
     super(props)
 
-    this.state = {videos:[] };
+    this.state = {
+      videos:[],
+      selectedVideo: null
+     };
 //this.setState({videos:videos});
     YTSearch({key: API_KEY, term: 'one piece'}, videos => {
-      this.setState({videos})
+      this.setState({
+        videos: videos,
+      selectedVideo:videos[0]
+      })
     })
   }
 
@@ -27,7 +34,10 @@ class App extends Component {
   return (
   <div>
     <Searchbar />
-    <VideoList videos={this.state.videos}/>
+    <VideoDetail video={this.state.selectedVideo} />
+    <VideoList
+      onVideoSelect={selectedVideo => {this.setState({selectedVideo})}}  
+      videos={this.state.videos} />
   </div>
     )
   }
