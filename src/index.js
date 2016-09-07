@@ -1,4 +1,4 @@
-
+import _ from 'lodash';
 import React, { Component } from 'react';//go find the react libary and assign it to the variable react
 import ReactDOM from 'react-dom';//react-dom to render the component to the html
 import YTSearch from 'youtube-api-search';
@@ -21,22 +21,27 @@ class App extends Component {
       selectedVideo: null
      };
 //this.setState({videos:videos});
-    YTSearch({key: API_KEY, term: 'one piece'}, videos => {
-      this.setState({
-        videos: videos,
-      selectedVideo:videos[0]
-      })
-    })
+    this.videoSearch('one piece')
   }
+videoSearch(term){
+  YTSearch({key: API_KEY, term: term}, videos => {
+    this.setState({
+      videos: videos,
+    selectedVideo:videos[0]
+    })
+  })
+}
+
 
   render(){
+    const videoSearch = _.debounce((term) => { this.videoSearch(term)}, 300);
 
-  return (
-  <div>
-    <Searchbar />
+    return (
+      <div>
+    <Searchbar onSearchTermChange={videoSearch}/>
     <VideoDetail video={this.state.selectedVideo} />
     <VideoList
-      onVideoSelect={selectedVideo => {this.setState({selectedVideo})}}  
+      onVideoSelect={selectedVideo => {this.setState({selectedVideo})}}
       videos={this.state.videos} />
   </div>
     )
